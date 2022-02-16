@@ -1,7 +1,7 @@
 pipeline {
   agent any
   options {
-    timeout(time: 10)
+    timeout(time: 10, unit: 'MINUTES')
   }
   tools {nodejs "node14"}
   stages {
@@ -32,9 +32,11 @@ pipeline {
     }
 
     stage('Deploy') {
-      steps { sh 'rm -rf ./node_modules' }
-      steps { sh 'rm -rfv /var/www/darvsistemasraspberrypi/*' }
-      steps { sh 'cp -R ./dist/ /var/www/darvsistemasraspberrypi/' }
+      steps {
+        sh 'rm -rf ./node_modules'
+        sh 'rm -rfv /var/www/darvsistemasraspberrypi/*'
+        sh 'cp -R ./dist/ /var/www/darvsistemasraspberrypi/'
+      }
     }
   }
 }
