@@ -22,7 +22,7 @@ pipeline {
             steps { sh 'npm run lint' }
         }
         stage('Unit tests') {
-            steps { sh 'npm run test --watch=false --single-run' }
+            steps { sh 'npm run test --watch=false --browsers=ChromeHeadless --no-progress' }
         }
       }
     }
