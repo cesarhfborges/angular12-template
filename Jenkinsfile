@@ -1,14 +1,18 @@
 pipeline {
   agent any
+  options {
+    timeout(time: 10, unit: 'MINUTES')
+  }
   tools {nodejs "node14"}
   stages {
 
-    stage('Install') {
-      timeout {
-        noActivity(20)
-        failBuild()
-        writeDescription('Build failed due to timeout after {0} minutes')
+    stage ('prepare'){
+      steps{
+        checkout scm
       }
+    }
+
+    stage('Install modules') {
       steps { sh 'npm install' }
     }
 
@@ -18,7 +22,7 @@ pipeline {
             steps { sh 'npm run lint' }
         }
         stage('Unit tests') {
-            steps { sh 'npm run test --watch=false' }
+            steps { sh 'npm run test --watch=false --single-run' }
         }
       }
     }
@@ -28,8 +32,9 @@ pipeline {
     }
 
     stage('Deploy') {
+      steps { sh 'rm -rf ./node_modules' }
       steps { sh 'rm -rfv /var/www/darvsistemasraspberrypi/*' }
-      steps { sh 'cp -R /var/lib/jenkins/jobs/ /var/www/darvsistemasraspberrypi' }
+      steps { sh 'cp -R ./dist/ /var/www/darvsistemasraspberrypi/' }
     }
   }
 }
