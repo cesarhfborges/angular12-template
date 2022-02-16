@@ -4,38 +4,27 @@ pipeline {
   stages {
 
     stage('Install') {
-      steps {
-        timeout(time: 5, unit: 'MINUTES') {
-          sh 'npm install'
-        }
+      timeout {
+        noActivity(20)
+        failBuild()
+        writeDescription('Build failed due to timeout after {0} minutes')
       }
+      steps { sh 'npm install' }
     }
 
     stage('Test') {
       parallel {
         stage('Static code analysis') {
-          steps {
-            timeout(time: 5, unit: 'MINUTES') {
-              sh 'npm run lint'
-            }
-          }
+            steps { sh 'npm run lint' }
         }
         stage('Unit tests') {
-          steps {
-            timeout(time: 5, unit: 'MINUTES') {
-              sh 'npm run test --watch=false'
-            }
-          }
+            steps { sh 'npm run test --watch=false' }
         }
       }
     }
 
     stage('Build') {
-      steps {
-        timeout(time: 5, unit: 'MINUTES') {
-          sh 'npm run build --prod'
-        }
-      }
+      steps { sh 'npm run build --prod' }
     }
 
     stage('Deploy') {
