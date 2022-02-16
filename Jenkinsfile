@@ -13,7 +13,7 @@ pipeline {
     }
 
     stage('Install modules') {
-      steps { sh 'npm install' }
+      steps { sh 'yarn install' }
     }
 
     stage('Tests') {
