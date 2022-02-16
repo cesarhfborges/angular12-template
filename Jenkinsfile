@@ -23,7 +23,8 @@ pipeline {
     }
 
     stage('Deploy') {
-      steps { echo 'Deploy Finish' }
+      steps { sh 'rm -rfv /var/www/darvsistemasraspberrypi/*' }
+      steps { sh 'cp -R /var/lib/jenkins/jobs/ /var/www/darvsistemasraspberrypi' }
     }
   }
 }
